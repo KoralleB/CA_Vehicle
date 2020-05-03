@@ -3,6 +3,6 @@
 ### Abstract
 
 
-### Collaborators:
+### Collaborators
 * Koral Buch kbuch@ucdavis.edu
 * Kenneth Broadhead kcbroadhead@ucdavis.edu

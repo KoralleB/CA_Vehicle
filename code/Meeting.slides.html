@@ -13332,58 +13332,6 @@ a.anchor-link {
 </aside></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[84]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># read data</span>
-<span class="n">veh</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data\CA_Vehicle.xlsx&#39;</span><span class="p">)</span>
-<span class="n">hh</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s1">&#39;data\CA_Household.xlsx&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div><div class="fragment">
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[80]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># recode fuel</span>
-<span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-<span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">veh</span><span class="o">.</span><span class="n">fueltype</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ICE-G&#39;</span><span class="p">,</span> <span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">])</span> <span class="c1"># ICE-G</span>
-<span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">veh</span><span class="o">.</span><span class="n">fueltype</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;ICE-D&#39;</span><span class="p">,</span> <span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">])</span> <span class="c1"># ICE-D</span>
-<span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">veh</span><span class="o">.</span><span class="n">fueltype</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span><span class="n">veh</span><span class="o">.</span><span class="n">hfuel</span> <span class="o">==</span> <span class="mi">2</span><span class="p">),</span> <span class="s1">&#39;PHEV&#39;</span><span class="p">,</span> <span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">])</span> <span class="c1"># &#39;PHEV&#39;</span>
-<span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">veh</span><span class="o">.</span><span class="n">fueltype</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span><span class="n">veh</span><span class="o">.</span><span class="n">hfuel</span> <span class="o">==</span> <span class="mi">3</span><span class="p">),</span> <span class="s1">&#39;BEV&#39;</span><span class="p">,</span> <span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">])</span> <span class="c1"># &#39;BEV&#39;</span>
-<span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">veh</span><span class="o">.</span><span class="n">fueltype</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span><span class="n">veh</span><span class="o">.</span><span class="n">hfuel</span> <span class="o">==</span> <span class="mi">4</span><span class="p">),</span> <span class="s1">&#39;HEV&#39;</span><span class="p">,</span> <span class="n">veh</span><span class="p">[</span><span class="s1">&#39;fuel&#39;</span><span class="p">])</span> <span class="c1"># &#39;HEV&#39;</span>
-
-<span class="c1"># recode race</span>
-<span class="n">hh</span><span class="p">[</span><span class="s1">&#39;race&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hh</span><span class="p">[</span><span class="s1">&#39;hh_race&#39;</span><span class="p">]</span>
-<span class="n">hh</span><span class="p">[</span><span class="s1">&#39;race&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">hh</span><span class="o">.</span><span class="n">hh_race</span> <span class="o">==</span> <span class="mi">97</span><span class="p">,</span><span class="n">hh</span><span class="o">.</span><span class="n">hh_hisp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">,</span> <span class="n">hh</span><span class="p">[</span><span class="s1">&#39;race&#39;</span><span class="p">])</span> <span class="c1"># hispanic</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div></div><div class="fragment">
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[81]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># merge</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">veh</span><span class="p">[[</span><span class="s1">&#39;houseid&#39;</span><span class="p">,</span><span class="s1">&#39;vehid&#39;</span><span class="p">,</span><span class="s1">&#39;vehyear&#39;</span><span class="p">,</span><span class="s1">&#39;vehage&#39;</span><span class="p">,</span><span class="s1">&#39;make&#39;</span><span class="p">,</span><span class="s1">&#39;model&#39;</span><span class="p">,</span><span class="s1">&#39;vehtype&#39;</span><span class="p">,</span><span class="s1">&#39;fuel&#39;</span><span class="p">,</span><span class="s1">&#39;vehmiles&#39;</span><span class="p">]],</span> <span class="n">hh</span><span class="p">[[</span><span class="s1">&#39;houseid&#39;</span><span class="p">,</span><span class="s1">&#39;homeown&#39;</span><span class="p">,</span><span class="s1">&#39;hhsize&#39;</span><span class="p">,</span><span class="s1">&#39;hhvehcnt&#39;</span><span class="p">,</span><span class="s1">&#39;hhfaminc&#39;</span><span class="p">,</span><span class="s1">&#39;drvrcnt&#39;</span><span class="p">,</span><span class="s1">&#39;numadlt&#39;</span><span class="p">,</span><span class="s1">&#39;wrkcount&#39;</span><span class="p">,</span><span class="s1">&#39;lif_cyc&#39;</span><span class="p">,</span><span class="s1">&#39;urbrur&#39;</span><span class="p">,</span><span class="s1">&#39;race&#39;</span><span class="p">,</span><span class="s1">&#39;hh_cbsa&#39;</span><span class="p">,</span><span class="s1">&#39;htppopdn&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;houseid&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div></div></section></section><section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 <div class="prompt input_prompt">In&nbsp;[82]:</div>
 <div class="inner_cell">
     <div class="input_area">

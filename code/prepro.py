@@ -110,5 +110,5 @@ def get_data():
     hh = prepro_hh(hh)
     hh = hh_loc(hh)
     data = merge_hhveh(veh, hh)
-    data.to_csv('../export_files/data.csv',index=False)
+    data.to_csv('../output_files/data.csv',index=False)
 

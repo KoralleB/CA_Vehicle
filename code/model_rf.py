@@ -7,10 +7,10 @@ from sklearn.metrics import confusion_matrix
 from sklearn import metrics
 
 def read_data():
-    X_train = pd.read_csv('../export_files/X_train.csv')
-    y_train = pd.read_csv('../export_files/y_train.csv')
-    X_test = pd.read_csv('../export_files/X_test.csv')
-    y_test = pd.read_csv('../export_files/y_test.csv')
+    X_train = pd.read_csv('../output_files/X_train.csv')
+    y_train = pd.read_csv('../output_files/y_train.csv')
+    X_test = pd.read_csv('../output_files/X_test.csv')
+    y_test = pd.read_csv('../output_files/y_test.csv')
 
     X_train = np.array(X_train)
     y_train = np.array(y_train).flatten()
@@ -51,29 +51,29 @@ def fit(X_train, y_train, X_test, y_test, grid_params):
     y_pred = model.predict(X_test)
 
     # save best_params
-    with open("../export_files/best_params_rf.p", "wb") as fp:
+    with open("../output_files/best_params_rf.p", "wb") as fp:
         pickle.dump(model.best_params_, fp, protocol=pickle.HIGHEST_PROTOCOL)
     # save prediction
-    np.save('../export_files/y_pred_rf.npy', y_pred)
+    np.save('../output_files/y_pred_rf.npy', y_pred)
 
     # confusion matrix
     acc = metrics.accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
-    np.save('../export_files/acc_rf.npy', acc)
-    np.save('../export_files/cm_rf.npy', cm)
+    np.save('../output_files/acc_rf.npy', acc)
+    np.save('../output_files/cm_rf.npy', cm)
 
     # ROC
     probs = model.predict_proba(X_test)[:, 1]
     fpr, tpr, threshold = metrics.roc_curve(y_test, probs)
     roc_auc = metrics.auc(fpr, tpr)
-    np.save('../export_files/fpr_rf.npy', fpr)
-    np.save('../export_files/tpr_rf.npy', tpr)
-    np.save('../export_files/roc_auc_rf.npy', roc_auc)
+    np.save('../output_files/fpr_rf.npy', fpr)
+    np.save('../output_files/tpr_rf.npy', tpr)
+    np.save('../output_files/roc_auc_rf.npy', roc_auc)
 
     # PR
     precision, recall, _ = metrics.precision_recall_curve(y_test, probs)
-    np.save('../export_files/precision_rf.npy', precision)
-    np.save('../export_files/recall_rf.npy', recall)
+    np.save('../output_files/precision_rf.npy', precision)
+    np.save('../output_files/recall_rf.npy', recall)
 
 
 def modeling():
@@ -84,7 +84,7 @@ def modeling():
 def model_bp():
     X_train, y_train, X_test, y_test = read_data()
 
-    with open('../export_files/best_params_rf.p', 'rb') as fp:
+    with open('../output_files/best_params_rf.p', 'rb') as fp:
         bp = pickle.load(fp)
 
     #model_bp = RandomForestClassifier(class_weight='balanced',
@@ -102,4 +102,4 @@ def model_bp():
     model_bp.fit(X_train, y_train)
 
     importances = model_bp.feature_importances_
-    np.save('../export_files/importances_rf.npy', importances)
+    np.save('../output_files/importances_rf.npy', importances)

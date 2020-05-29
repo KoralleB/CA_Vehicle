@@ -35,9 +35,9 @@ def conf_mat(cm):
     return(cm)
 
 def var_imp(ind_i):
-    with open('../export_files/features.p', 'rb') as fp:
+    with open('../output_files/features.p', 'rb') as fp:
         features = pickle.load(fp)
-    importances = np.load('../export_files/importances_rf.npy')
+    importances = np.load('../output_files/importances_rf.npy')
 
     # df of importance
     d = {'features': features, 'importances': importances}

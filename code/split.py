@@ -6,7 +6,7 @@ from sklearn.impute import SimpleImputer
 
 
 def read_data():
-    data = pd.read_csv('../export_files/data.csv')
+    data = pd.read_csv('../output_files/data.csv')
 
     # categorical columns
     obj_colnames = ['homeown', 'income', 'race', 'lif_cyc', 'urbrur', 'htppopdn']
@@ -36,8 +36,8 @@ def const_x_y(data):
     X_final = pd.concat([X_cat, X_num], axis=1)
     X_final = X_final.loc[:, ~X_final.columns.duplicated()]
 
-    X_final.to_csv("../export_files/X_final.csv", index=False)
-    y.to_csv("../export_files/y.csv", index=False)
+    X_final.to_csv("../output_files/X_final.csv", index=False)
+    y.to_csv("../output_files/y.csv", index=False)
     return X_final, y
 
 
@@ -46,11 +46,11 @@ def split_data():
     X_final, y = const_x_y(data)
     # train test split
     X_train, X_test, y_train, y_test = train_test_split(X_final, y, test_size=0.33, random_state=0)
-    X_train.to_csv("../export_files/X_train.csv", index=False)
-    X_test.to_csv("../export_files/X_test.csv", index=False)
-    y_train.to_csv("../export_files/y_train.csv", index=False)
-    y_test.to_csv("../export_files/y_test.csv", index=False)
+    X_train.to_csv("../output_files/X_train.csv", index=False)
+    X_test.to_csv("../output_files/X_test.csv", index=False)
+    y_train.to_csv("../output_files/y_train.csv", index=False)
+    y_test.to_csv("../output_files/y_test.csv", index=False)
 
     features = X_train.columns
-    with open('../export_files/features.p', 'wb') as fp:
+    with open('../output_files/features.p', 'wb') as fp:
         pickle.dump(features, fp, protocol=pickle.HIGHEST_PROTOCOL)

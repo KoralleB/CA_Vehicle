@@ -4,7 +4,7 @@ import pandas as pd
 def read_data():
     veh = pd.read_excel('../data/CA_Vehicle.xlsx')
     hh = pd.read_excel('../data/CA_Household.xlsx')
-    return veh,hh
+    return veh, hh
 
 
 def prepro_veh(veh):
@@ -26,7 +26,7 @@ def prepro_veh(veh):
 
     veh['vehmiles'] = veh['vehmiles'].replace(
         {-88: np.nan, -1: np.nan, -77: np.nan, -7: np.nan, -8: np.nan})  # convert all sorts of no-answer to NaN
-    return (veh)
+    return veh
 
 
 def prepro_hh(hh):
@@ -52,7 +52,7 @@ def prepro_hh(hh):
     hh['lif_cyc'] = hh['lif_cyc'].replace({-9: np.nan})  # convert “Not Ascertained” to NaN
 
     hh.drop(hh[hh['drvrcnt'] == 0].index, inplace=True)  # respondent didn't understand the question
-    return (hh)
+    return hh
 
 
 def hh_loc(hh):
@@ -89,7 +89,7 @@ def hh_loc(hh):
             if key == 'South':
                 hh['location'] = np.where(hh.hh_cbsa == zone, 'South', hh['location'])
 
-    return (hh)
+    return hh
 
 
 def merge_hhveh(veh, hh):
@@ -101,7 +101,7 @@ def merge_hhveh(veh, hh):
     obj_colnames = ['homeown', 'income', 'race', 'lif_cyc', 'urbrur', 'htppopdn']
     for col in obj_colnames:
         data[col] = data[col].astype('object')
-    return(data)
+    return data
 
 
 def get_data():

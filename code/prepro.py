@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def read_data():
     veh = pd.read_excel('../data/CA_Vehicle.xlsx')
     hh = pd.read_excel('../data/CA_Household.xlsx')
@@ -110,5 +111,4 @@ def get_data():
     hh = prepro_hh(hh)
     hh = hh_loc(hh)
     data = merge_hhveh(veh, hh)
-    data.to_csv('../output_files/data.csv',index=False)
-
+    data.to_csv('../output_files/data.csv', index=False)

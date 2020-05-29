@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn import metrics
 
+
 def read_data():
     X_train = pd.read_csv('../output_files/X_train.csv')
     y_train = pd.read_csv('../output_files/y_train.csv')
@@ -19,20 +20,21 @@ def read_data():
 
     return X_train, y_train, X_test, y_test
 
+
 def params():
-    #n_estimators = [int(x) for x in np.linspace(start=100, stop=1000, num=100)]  # number of trees
-    #max_depth = [int(x) for x in np.linspace(1, 50, num=10)]  # maximum number of levels in tree
-    #max_depth.append(None)
-    #min_samples_split = [2, 5, 10]  # minimum number of samples required to split a node
-    #min_samples_leaf = [1, 2, 4]  # minimum number of samples required at each leaf node
-    #max_features = ['auto', 'sqrt']  # number of features to consider at every split
-    #max_leaf_nodes = [int(x) for x in np.linspace(0, 200, num=8)]  # condition on node splitting
+    # n_estimators = [int(x) for x in np.linspace(start=100, stop=1000, num=100)]  # number of trees
+    # max_depth = [int(x) for x in np.linspace(1, 50, num=10)]  # maximum number of levels in tree
+    # max_depth.append(None)
+    # min_samples_split = [2, 5, 10]  # minimum number of samples required to split a node
+    # min_samples_leaf = [1, 2, 4]  # minimum number of samples required at each leaf node
+    # max_features = ['auto', 'sqrt']  # number of features to consider at every split
+    # max_leaf_nodes = [int(x) for x in np.linspace(0, 200, num=8)]  # condition on node splitting
 
     n_estimators = [300, 800]
-    max_depth = [5,15]
+    max_depth = [5, 15]
 
     # create hyperparameter grid
-    #grid_params = {'n_estimators': n_estimators,
+    # grid_params = {'n_estimators': n_estimators,
     #          'min_samples_split': min_samples_split,
     #          'min_samples_leaf': min_samples_leaf,
     #          'max_leaf_nodes': max_leaf_nodes.
@@ -40,9 +42,10 @@ def params():
     #          'max_depth': max_depth}
 
     grid_params = {'n_estimators': n_estimators,
-                 'max_depth': max_depth}
+                   'max_depth': max_depth}
 
     return grid_params
+
 
 def fit(X_train, y_train, X_test, y_test, grid_params):
     rf = RandomForestClassifier(class_weight='balanced')
@@ -81,19 +84,20 @@ def modeling():
     grid_params = params()
     fit(X_train, y_train, X_test, y_test, grid_params)
 
-def model_bp():
+
+def modeling_bp():
     X_train, y_train, X_test, y_test = read_data()
 
     with open('../output_files/best_params_rf.p', 'rb') as fp:
         bp = pickle.load(fp)
 
-    #model_bp = RandomForestClassifier(class_weight='balanced',
-     #                                 n_estimators=bp['n_estimators'],
-      #                                min_samples_split=bp['min_samples_split'],
-       #                               min_samples_leaf=bp['min_samples_leaf'],
-      #                                max_leaf_nodes=bp['max_leaf_nodes'],
-      #                                max_features=bp['max_features'],
-      #                                max_depth=bp['max_depth'])
+    # model_bp = RandomForestClassifier(class_weight='balanced',
+    #                                 n_estimators=bp['n_estimators'],
+    #                                min_samples_split=bp['min_samples_split'],
+    #                               min_samples_leaf=bp['min_samples_leaf'],
+    #                                max_leaf_nodes=bp['max_leaf_nodes'],
+    #                                max_features=bp['max_features'],
+    #                                max_depth=bp['max_depth'])
 
     model_bp = RandomForestClassifier(class_weight='balanced',
                                       n_estimators=bp['n_estimators'],

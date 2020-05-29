@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 
@@ -40,7 +41,7 @@ def const_x_y(data):
     return X_final, y
 
 
-def split_data(X_final, y):
+def split_data():
     data = read_data()
     X_final, y = const_x_y(data)
     # train test split
@@ -49,3 +50,7 @@ def split_data(X_final, y):
     X_test.to_csv("../export_files/X_test.csv", index=False)
     y_train.to_csv("../export_files/y_train.csv", index=False)
     y_test.to_csv("../export_files/y_test.csv", index=False)
+
+    features = X_train.columns
+    with open('../export_files/features.p', 'wb') as fp:
+        pickle.dump(features, fp, protocol=pickle.HIGHEST_PROTOCOL)

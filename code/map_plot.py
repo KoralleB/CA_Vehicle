@@ -1,19 +1,19 @@
 import pandas as pd
 import numpy as np
+import math
 from plotly.offline import init_notebook_mode
 from urllib.request import urlopen
 import json
 import plotly.express as px
+
 init_notebook_mode(connected=True)
 
 
 def read_data(model_pred=None):
     data = pd.read_csv('../output_files/data.csv')
     X_test = pd.read_csv('../output_files/X_test.csv')
-    y_test = pd.read_csv('../output_files/y_test.csv')
 
     data = data[data.index.isin(X_test.index)]
-    data.drop(data[data['region'] == 7].index, inplace=True)  # drop "I don't know"
 
     # replace number with name
     region_names = ['Central', 'LA', 'Rest', 'SD', 'SF', 'Sac']
@@ -21,14 +21,16 @@ def read_data(model_pred=None):
         data.region = data.region.replace(num, name)
 
     if model_pred == 'rf':
-        pred_rf = pd.read_csv('../output_files/y_pred_rf.csv')
-        data['pred_rf'] = pred_rf
+        y_pred = np.load('../output_files/y_pred_rf.npy')
+        data['y_pred'] = y_pred
 
     if model_pred == 'logit':
-        pred_log = pd.read_csv('../output_files/y_pred_log.csv')
-        data['pred_rf'] = pred_log
+        y_pred = np.load('../output_files/y_pred_log.npy')
+        data['y_pred'] = y_pred
 
-    return data, X_test, y_test
+    data.drop(data[data['region'] == 7].index, inplace=True)  # drop "I don't know"
+
+    return data
 
 
 def ca_county():
@@ -59,22 +61,38 @@ def design_county(data, df_county, ycolumn):
     """
     :param data:
     :param df_county:
-    :param ycolumn: 'y' or 'pred_rf' or 'pred_log'
+    :param ycolumn: 'y' or 'y_pred'
     :return:
     """
-    region_names = ['Central', 'LA', 'Rest', 'SD', 'SF', 'Sac']
+    # region_names = ['Central', 'LA', 'Rest', 'SD', 'SF', 'Sac']
+    # temp = data.groupby(ycolumn)['region'].value_counts().sort_index()
+    # region lists per vehicle type
+    # done in case some regions have 0 vehicles predicted
+    temp = data.copy()
+    temp['ones'] = 1
+    temp = temp.groupby([ycolumn, 'region'])['ones'].sum().to_frame('count').reset_index()
 
-    temp = data.groupby(ycolumn)['region'].value_counts().sort_index()
+    reg_list0 = []
+    reg_list1 = []
+    for i in range(len(temp)):
+        if temp[ycolumn][i] == 0:
+            reg_list0.append(temp.region[i])
+        if temp[ycolumn][i] == 1:
+            reg_list1.append(temp.region[i])
+
     df_county['ICEV'] = np.nan
     df_county['EV'] = np.nan
     df_county['EV_per'] = np.nan
 
-    for num, name in enumerate(region_names):
-        df_county['ICEV'] = np.where(df_county.region == name, temp[0][num], df_county['ICEV'])
-        df_county['EV'] = np.where(df_county.region == name, temp[1][num], df_county['EV'])
-        df_county['EV_per'] = np.where(df_county.region == name,
-                                       round(temp[1][num] / (temp[0][num] + temp[1][num]) * 100, 2),
-                                       df_county['EV_per'])
+    for num, name in enumerate(reg_list0, start=0):
+        df_county['ICEV'] = np.where(df_county.region == name, temp['count'][num], df_county['ICEV'])
+
+    for num, name in enumerate(reg_list1, start=len(reg_list0)):
+        df_county['EV'] = np.where(df_county.region == name, temp['count'][num], df_county['EV'])
+
+    df_county = df_county.fillna(0)
+
+    df_county['EV_per'] = round(df_county['EV'] / (df_county['EV'] + df_county['ICEV']) * 100, 2)
 
     with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
         counties = json.load(response)
@@ -86,11 +104,17 @@ def design_county(data, df_county, ycolumn):
     return df_county_str, counties
 
 
-def map_plot(df_county_str, counties):
+def map_plot(model_pred=None, ycolumn='y'):
+    data = read_data(model_pred=model_pred)
+    df_county = ca_county()
+    df_county_str, counties = design_county(data, df_county, ycolumn=ycolumn)
+
+    # plotting
     fig = px.choropleth_mapbox(df_county_str, geojson=counties, locations='FIPS', color='EV_per',
                                hover_name='region',
                                color_continuous_scale="Viridis",
-                               range_color=(0, 16),
+                               #range_color=(0, math.ceil(df_county_str['EV_per'].max())),
+                               range_color=(0, 100),
                                mapbox_style="carto-positron",
                                zoom=4.5,
                                center={"lat": 36.778259, "lon": -119.417931},

@@ -8,24 +8,29 @@ from sklearn.impute import SimpleImputer
 def read_data():
     data = pd.read_csv('../output_files/data.csv')
 
-    # categorical columns
-    obj_colnames = ['homeown', 'income', 'race', 'lif_cyc', 'urbrur', 'htppopdn']
+    # change column type
+    obj_colnames = ['tnc_veh', 'delivery', 'county', 'region', 'charge_work', 'elec_acc', 'housing',
+                    'hh_inc', 'gender', 'employ', 'stu', 'drive_freq', 'race']
+
     for col in obj_colnames:
         data[col] = data[col].astype('object')
+
+    data['ann_mile'] = data['ann_mile'].astype('float64')
+
     return data
 
 
 def const_x_y(data):
     # construct X and y
-    y = data.iloc[:, data.columns == 'fuel']
-    X = data.loc[:, ~data.columns.isin(['houseid', 'fuel'])]
+    y = data.iloc[:, data.columns == 'y']
+    X = data.iloc[:, ~data.columns.isin(['sampno', 'perid', 'y', 'county'])]
 
     # dummy variables for categorical columns
-    X_cat = X.loc[:, ~X.columns.isin(['vehmiles', 'hhvehcnt', 'hhsize', 'numadlt', 'drvrcnt', 'wrkcount'])]
+    X_cat = X.loc[:, ~X.columns.isin(['ann_mile', 'hh_veh', 'hh_size', 'hh_emp', 'hh_drv'])]
     X_cat = pd.get_dummies(X_cat, dummy_na=True)
 
     # impute with mean numerical columns
-    X_num = X.loc[:, X.columns.isin(['vehmiles', 'hhvehcnt', 'hhsize', 'numadlt', 'drvrcnt', 'wrkcount'])]
+    X_num = X.loc[:, X.columns.isin(['ann_mile', 'hh_veh', 'hh_size', 'hh_emp', 'hh_drv'])]
     num_col = X_num.columns
     imp = SimpleImputer(missing_values=np.nan, strategy='mean')
     X_num = imp.fit_transform(X_num)

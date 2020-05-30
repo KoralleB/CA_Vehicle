@@ -3,112 +3,120 @@ import pandas as pd
 
 
 def read_data():
-    veh = pd.read_excel('../data/CA_Vehicle.xlsx')
-    hh = pd.read_excel('../data/CA_Household.xlsx')
-    return veh, hh
+    veh = pd.read_csv('../data/survey_res_vehicle.csv')
+    main = pd.read_csv('../data/survey_res_main.csv')
+    per = pd.read_csv('../data/survey_res_person.csv')
+
+    return veh, main, per
 
 
 def prepro_veh(veh):
-    veh = veh.loc[~(veh['vehyear'] < 2011), :]  # remove vehicles older than 6 years
+    # shorten column names
+    veh = veh.rename(columns={'primary_driver_id': 'perid'})
+    veh = veh.rename(columns={'annual_mileage': 'ann_mile'})
 
-    # subset car, suv
-    type_rm = [2, 4, 5, 6, 7, 97, -7, -8]
-    for i in type_rm:
-        veh = veh.loc[~(veh['vehtype'] == i), :]
+    # response variable
+    # Recode gas as 0, electric as 1
+    veh['y'] = 2
+    veh['y'] = np.where(veh.fuel_clean == 1, 0, veh['y'])  # ICE-G
+    veh['y'] = np.where(veh.fuel_clean == 2, 0, veh['y'])  # HEV
+    veh['y'] = np.where(veh.fuel_clean == 3, 1, veh['y'])  # PHEV
+    veh['y'] = np.where(veh.fuel_clean == 4, 0, veh['y'])  # ICE-D
+    veh['y'] = np.where(veh.fuel_clean == 5, 1, veh['y'])  # BEV
+    veh['y'] = np.where(veh.fuel_clean == 6, 1, veh['y'])  # FCEV
+    veh['y'] = np.where(veh.fuel_clean == 7, 1, veh['y'])  # PFCEV
+    veh['y'] = np.where(veh.fuel_clean == 8, 0, veh['y'])  # ICE-E85
+    veh['y'] = np.where(veh.fuel_clean == 9, 2, veh['y'])  # CNG -> drop
+    veh.drop(veh[veh['y'] == 2].index, inplace=True)
 
-    # Re-code gas as 0, electric as 1
-    veh['fuel'] = 2
-    veh['fuel'] = np.where(veh.fueltype == 1, 0, veh['fuel'])  # ICE-G
-    veh['fuel'] = np.where(veh.fueltype == 2, 0, veh['fuel'])  # ICE-D
-    veh['fuel'] = np.where(np.logical_and(veh.fueltype == 3, veh.hfuel == 2), 1, veh['fuel'])  # 'PHEV'
-    veh['fuel'] = np.where(np.logical_and(veh.fueltype == 3, veh.hfuel == 3), 1, veh['fuel'])  # 'BEV'
-    veh['fuel'] = np.where(np.logical_and(veh.fueltype == 3, veh.hfuel == 4), 0, veh['fuel'])  # 'HEV'
-    veh.drop(veh[veh['fuel'] == 2].index, inplace=True)
-
-    veh['vehmiles'] = veh['vehmiles'].replace(
-        {-88: np.nan, -1: np.nan, -77: np.nan, -7: np.nan, -8: np.nan})  # convert all sorts of no-answer to NaN
     return veh
 
 
-def prepro_hh(hh):
-    hh['homeown'] = hh['homeown'].replace({-7: np.nan})  # convert “I prefer not to answer” to NaN
+def prepro_main(main):
+    # shorten column names
+    main = main.rename(columns={'household_members_4': 'hh_emp'})
+    main = main.rename(columns={'home_electricity_access': 'elec_acc'})
+    main = main.rename(columns={'tot_hh_members': 'hh_size'})
+    main = main.rename(columns={'num_hh_vehicles': 'hh_veh'})
 
     # household income
-    hh['income'] = np.nan
-    for i in [1, 2, 3, 4, 5]:
-        hh['income'] = np.where(hh.hhfaminc == i, 1, hh['income'])  # $0 to $49,999
-    for i in [6, 7]:
-        hh['income'] = np.where(hh.hhfaminc == i, 2, hh['income'])  # $50,000 to $99,999
-    for i in [8, 9]:
-        hh['income'] = np.where(hh.hhfaminc == i, 3, hh['income'])  # $100,000 to $149,999
-    hh['income'] = np.where(hh.hhfaminc == 10, 4, hh['income'])  # $150,000 to $199,999
-    hh['income'] = np.where(hh.hhfaminc == 11, 5, hh['income'])  # over $200,000
+    main['hh_inc'] = np.nan
+    main['hh_inc'] = np.where(main.income == 1, 1, main['hh_inc'])  # $49,999 or under
+    main['hh_inc'] = np.where(main.income == 2, 1, main['hh_inc'])  # $49,999 or under
+    main['hh_inc'] = np.where(main.income == 3, 1, main['hh_inc'])  # $49,999 or under
+    main['hh_inc'] = np.where(main.income == 4, 1, main['hh_inc'])  # $49,999 or under
+    main['hh_inc'] = np.where(main.income == 5, 2, main['hh_inc'])  # $50,000 to $99,999
+    main['hh_inc'] = np.where(main.income == 6, 2, main['hh_inc'])  # $50,000 to $99,999
+    main['hh_inc'] = np.where(main.income == 7, 3, main['hh_inc'])  # $100,000 to $149,999
+    main['hh_inc'] = np.where(main.income == 8, 4, main['hh_inc'])  # $150,000 to $199,999
+    main['hh_inc'] = np.where(main.income == 9, 5, main['hh_inc'])  # $200,000 to $249,999
+    main['hh_inc'] = np.where(main.income == 10, 6, main['hh_inc'])  # $250,000 or more
+
+    return main
+
+
+def prepro_per(per):
+    # employment
+    per['employ'] = np.nan
+    per['employ'] = np.where(per.employment == 1, 1, per['employ'])  # employed full-time
+    per['employ'] = np.where(per.employment == 2, 1, per['employ'])  # employed part-time
+    per['employ'] = np.where(per.employment == 3, 1, per['employ'])  # employed full- and part- time
+    per['employ'] = np.where(per.employment == 5, 1, per['employ'])  # employed self
+    per['employ'] = np.where(per.employment == 4, 2, per['employ'])  # unemployed
+
+    # student
+    per['stu'] = np.nan
+    per['stu'] = np.where(per.student == 1, 1, per['stu'])  # full-time campus
+    per['stu'] = np.where(per.student == 2, 1, per['stu'])  # part-time campus
+    per['stu'] = np.where(per.student == 3, 2, per['stu'])  # online
+    per['stu'] = np.where(per.student == 4, 3, per['stu'])  # no
 
     # race
-    hh['race'] = hh['hh_race']
-    hh['race'] = np.where(np.logical_and(hh.hh_race == 97, hh.hh_hisp == 1), 7, hh['race'])  # recode hispanic
-    hh['race'] = hh['race'].replace({-7: np.nan})  # convert “I prefer not to answer” to NaN
-    hh['race'] = hh['race'].replace({-8: np.nan})  # convert “I dont know” to NaN
+    per['race'] = np.nan
+    per['race'] = np.where(per.ethnicity == 1, 1, per['race'])  # hispanic
+    per['race'] = np.where(per.race_1 == 1, 2, per['race'])  # native
+    per['race'] = np.where(per.race_2 == 1, 3, per['race'])  # asian
+    per['race'] = np.where(per.race_3 == 1, 4, per['race'])  # african american
+    per['race'] = np.where(per.race_4 == 1, 5, per['race'])  # pacific islands
+    per['race'] = np.where(per.race_5 == 1, 6, per['race'])  # white
 
-    hh['lif_cyc'] = hh['lif_cyc'].replace({-9: np.nan})  # convert “Not Ascertained” to NaN
+    # number of drivers in a household
+    temp = per.groupby(['sampno', 'license']).size()
+    temp = temp.to_frame(name='hh_drv').reset_index()
+    temp.drop(temp[temp['license'] == 2].index, inplace=True)
+    per = pd.merge(per, temp[['sampno', 'hh_drv']], on='sampno')
 
-    hh.drop(hh[hh['drvrcnt'] == 0].index, inplace=True)  # respondent didn't understand the question
-    return hh
-
-
-def hh_loc(hh):
-    # remove non-CA
-    locs_rm = ['12580', '17980', '19660', '19740', '21660', '22800', '23820', '28140', '29820', '36420', '36500',
-               '37980', '38060', '39660', '41620', '42660', '46060']
-    for loc_rm in locs_rm:
-        hh = hh.loc[~(hh['hh_cbsa'] == loc_rm), :]
-
-    hh.reset_index(drop=True, inplace=True)
-
-    # 6 zones
-    california = {'Sac': ['40900', '44700'],
-                  'SF': ['41860', '41940', '42100', '42220', '46700', '34900'],
-                  'LA': ['31080', '42200', '42020', '37100'],
-                  'North': ['17020', '39820', '21700', '46020', '46380', '39780', '17340', '49700', '18860', '45000'],
-                  'Central': ['41500', '23420', '12540', '33700', '47300', '32900', '31460', '25260'],
-                  'South': ['41740', '40140', '43760', '20940']}
-
-    hh['location'] = np.nan
-
-    for key, value in california.items():
-        for zone in value:
-            if key == 'Sac':
-                hh['location'] = np.where(hh.hh_cbsa == zone, 'Sac', hh['location'])
-            if key == 'SF':
-                hh['location'] = np.where(hh.hh_cbsa == zone, 'SF', hh['location'])
-            if key == 'LA':
-                hh['location'] = np.where(hh.hh_cbsa == zone, 'LA', hh['location'])
-            if key == 'North':
-                hh['location'] = np.where(hh.hh_cbsa == zone, 'North', hh['location'])
-            if key == 'Central':
-                hh['location'] = np.where(hh.hh_cbsa == zone, 'Central', hh['location'])
-            if key == 'South':
-                hh['location'] = np.where(hh.hh_cbsa == zone, 'South', hh['location'])
-
-    return hh
+    return per
 
 
-def merge_hhveh(veh, hh):
-    data = pd.merge(veh[['houseid', 'fuel', 'vehmiles']],
-                    hh[['houseid', 'homeown', 'income', 'race', 'hhvehcnt', 'hhsize', 'numadlt', 'drvrcnt', 'wrkcount',
-                        'lif_cyc', 'urbrur', 'htppopdn', 'location']], on='houseid')
+def merge_hhveh(veh, main, per):
+    # merge
+    data_temp = pd.merge(veh[['sampno', 'perid', 'y', 'ann_mile', 'tnc_veh', 'delivery']],
+                         main[['sampno', 'county', 'region', 'hh_veh', 'hh_size', 'hh_emp', 'charge_work',
+                               'elec_acc', 'housing', 'hh_inc']], on='sampno')
 
-    # categorical columns
-    obj_colnames = ['homeown', 'income', 'race', 'lif_cyc', 'urbrur', 'htppopdn']
+    data = pd.merge(data_temp,
+                    per[['perid', 'gender', 'employ', 'stu', 'hh_drv', 'drive_freq', 'race']], on='perid')
+
+    # replca blank with NaN
+    data = data.replace(r'^\s*$', np.nan, regex=True)
+
+    # change column type
+    obj_colnames = ['tnc_veh', 'delivery', 'county', 'region', 'charge_work', 'elec_acc', 'housing',
+                    'hh_inc', 'gender', 'employ', 'stu', 'drive_freq', 'race']
+
     for col in obj_colnames:
         data[col] = data[col].astype('object')
+
+    data['ann_mile'] = data['ann_mile'].astype('float64')
+
     return data
 
 
 def get_data():
-    veh, hh = read_data()
+    veh, main, per = read_data()
     veh = prepro_veh(veh)
-    hh = prepro_hh(hh)
-    hh = hh_loc(hh)
-    data = merge_hhveh(veh, hh)
+    main = prepro_main(main)
+    per = prepro_per(per)
+    data = merge_hhveh(veh, main, per)
     data.to_csv('../output_files/data.csv', index=False)

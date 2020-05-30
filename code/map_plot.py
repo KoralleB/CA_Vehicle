@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import math
 from plotly.offline import init_notebook_mode
 from urllib.request import urlopen
 import json
@@ -113,7 +112,7 @@ def map_plot(model_pred=None, ycolumn='y'):
     fig = px.choropleth_mapbox(df_county_str, geojson=counties, locations='FIPS', color='EV_per',
                                hover_name='region',
                                color_continuous_scale="Viridis",
-                               #range_color=(0, math.ceil(df_county_str['EV_per'].max())),
+                               # range_color=(0, math.ceil(df_county_str['EV_per'].max())),
                                range_color=(0, 100),
                                mapbox_style="carto-positron",
                                zoom=4.5,

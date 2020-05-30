@@ -9,8 +9,8 @@ def roc_plot(label, fpr, tpr, roc_auc):
     for i in range(len(label)):
         plt.plot(fpr[i], tpr[i], label=label[i] + ' AUC = %0.2f' % roc_auc[i])
     plt.plot([0, 1], [0, 1], 'r--')
-    plt.xlim([0, 1])
-    plt.ylim([0, 1])
+    plt.xlim([-0.01, 1.01])
+    plt.ylim([-0.01, 1.01])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     plt.title('ROC Curve')
@@ -22,8 +22,8 @@ def pr_plot(label, recall, precision):
     plt.figure()
     for i in range(len(label)):
         plt.plot(recall[i], precision[i], label=label[i])
-    plt.xlim([0, 1])
-    plt.ylim([0, 0.2])
+    plt.xlim([-0.01, 1.01])
+    plt.ylim([-0.01, 1.01])
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.title('PR Curve')

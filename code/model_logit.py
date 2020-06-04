@@ -1,22 +1,25 @@
-import numpy as np
-import pandas as pd
 import pickle
+
+import numpy as np
 from sklearn import metrics
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import GridSearchCV
 
 
-def read_data():
-    X_train = pd.read_csv('../output_files/X_train.csv')
-    y_train = pd.read_csv('../output_files/y_train.csv')
-    X_test = pd.read_csv('../output_files/X_test.csv')
-    y_test = pd.read_csv('../output_files/y_test.csv')
+def read_data(resample):
+    X_test = np.load('../output_files/X_test.npy')
+    y_test = np.load('../output_files/y_test.npy')
 
-    X_train = np.array(X_train)
-    y_train = np.array(y_train).flatten()
-    X_test = np.array(X_test)
-    y_test = np.array(y_test).flatten()
+    if resample is None:
+        X_train = np.load('../output_files/X_train.npy')
+        y_train = np.load('../output_files/y_train.npy')
+
+    if resample is not None:
+        path_load_X = '../output_files/X_train_' + resample + '.npy'
+        path_load_y = '../output_files/X_train_' + resample + '.npy'
+        X_train = np.load(path_load_X)
+        y_train = np.load(path_load_y)
 
     return X_train, y_train, X_test, y_test
 
@@ -40,7 +43,7 @@ def fit(X_train, y_train, X_test, y_test, grid_params):
     y_pred = model.predict(X_test)
 
     # save best_params
-    with open("../output_files/best_params_log.p", "wb") as fp:
+    with open('../output_files/best_params_log.p', 'wb') as fp:
         pickle.dump(model.best_params_, fp, protocol=pickle.HIGHEST_PROTOCOL)
     # save prediction
     np.save('../output_files/y_pred_log.npy', y_pred)
@@ -65,14 +68,14 @@ def fit(X_train, y_train, X_test, y_test, grid_params):
     np.save('../output_files/recall_log.npy', recall)
 
 
-def modeling():
-    X_train, y_train, X_test, y_test = read_data()
+def modeling(resample):
+    X_train, y_train, X_test, y_test = read_data(resample)
     grid_params = params()
     fit(X_train, y_train, X_test, y_test, grid_params)
 
 
-def modeling_bp(best_model_name):
-    X_train, y_train, X_test, y_test = read_data()
+def modeling_bp(resample, best_model_name):
+    X_train, y_train, X_test, y_test = read_data(resample)
 
     path_load = '../output_files/' + 'best_params_' + best_model_name + '.p'
     with open(path_load, 'rb') as fp:

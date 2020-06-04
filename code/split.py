@@ -3,6 +3,8 @@ import numpy as np
 import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
+from imblearn.over_sampling import RandomOverSampler, SMOTE
+from imblearn.under_sampling import RandomUnderSampler
 
 
 def read_data():
@@ -41,8 +43,8 @@ def const_x_y(data):
     X_final = pd.concat([X_cat, X_num], axis=1)
     X_final = X_final.loc[:, ~X_final.columns.duplicated()]
 
-    X_final.to_csv("../output_files/X_final.csv", index=False)
-    y.to_csv("../output_files/y.csv", index=False)
+    X_final.to_csv('../output_files/X_final.csv', index=False)
+    y.to_csv('../output_files/y.csv', index=False)
     return X_final, y
 
 
@@ -51,11 +53,46 @@ def split_data():
     X_final, y = const_x_y(data)
     # train test split
     X_train, X_test, y_train, y_test = train_test_split(X_final, y, test_size=0.33, random_state=0)
-    X_train.to_csv("../output_files/X_train.csv", index=False)
-    X_test.to_csv("../output_files/X_test.csv", index=False)
-    y_train.to_csv("../output_files/y_train.csv", index=False)
-    y_test.to_csv("../output_files/y_test.csv", index=False)
+    X_train.to_csv('../output_files/X_train.csv', index=False)
+    X_test.to_csv('../output_files/X_test.csv', index=False)
+    y_train.to_csv('../output_files/y_train.csv', index=False)
+    y_test.to_csv('../output_files/y_test.csv', index=False)
 
+    # features for variable importance
     features = X_train.columns
     with open('../output_files/features.p', 'wb') as fp:
         pickle.dump(features, fp, protocol=pickle.HIGHEST_PROTOCOL)
+
+    X_train = np.array(X_train)
+    y_train = np.array(y_train).flatten()
+    X_test = np.array(X_test)
+    y_test = np.array(y_test).flatten()
+
+    np.save('../output_files/X_train_over.npy', X_train)
+    np.save('../output_files/y_train_over.npy', y_train)
+    np.save('../output_files/X_test_over.npy', X_test)
+    np.save('../output_files/y_test_over.npy', y_test)
+
+    # resampling methods
+    over = RandomOverSampler(random_state=10)
+    X_train_over, y_train_over = over.fit_resample(X_train, y_train)
+
+    under = RandomUnderSampler(random_state=10)
+    X_train_under, y_train_under = under.fit_resample(X_train, y_train)
+
+    over_hyb = RandomOverSampler(sampling_strategy=0.3)
+    X_train_hyb, y_train_hyb = over_hyb.fit_resample(X_train, y_train)
+    under_hyb = RandomUnderSampler(sampling_strategy=1)
+    X_train_hyb, y_train_hyb = under_hyb.fit_resample(X_train_hyb, y_train_hyb)
+
+    smote = SMOTE(random_state=10)
+    X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
+
+    np.save('../output_files/X_train_over.npy', X_train_over)
+    np.save('../output_files/y_train_over.npy', y_train_over)
+    np.save('../output_files/X_train_smote.npy', X_train_smote)
+    np.save('../output_files/y_train_smote.npy', y_train_smote)
+    np.save('../output_files/X_train_under.npy', X_train_under)
+    np.save('../output_files/y_train_under.npy', y_train_under)
+    np.save('../output_files/X_train_hyb.npy', X_train_hyb)
+    np.save('../output_files/y_train_hyb.npy', y_train_hyb)

@@ -1,7 +1,8 @@
-import pandas as pd
-import numpy as np
 import pickle
+
 import matplotlib.pyplot as plt
+import pandas as pd
+from IPython.display import display
 
 
 def roc_plot(label, fpr, tpr, roc_auc):
@@ -31,14 +32,21 @@ def pr_plot(label, recall, precision):
     plt.show()
 
 
-def conf_mat(cm):
-    cm = pd.DataFrame(cm)
-    cm.columns = ['ICEV', 'EV']
-    cm.rename(index={0: 'ICEV', 1: 'EV'}, inplace=True)
-    return cm
+def conf_mat(label, cm):
+    for i in range(len(label)):
+        cm_pd = pd.DataFrame(data=cm[i],
+                             index=['ICEV', 'EV'],
+                             columns=['ICEV', 'EV'])
+        cm_pd = cm_pd.style.set_caption(label[i])
+        display(cm_pd)
 
 
-def var_imp(importances,ind_i):
+def acc_print(label, acc):
+    for i in range(len(label)):
+        print("Accuracy of ", label[i], " is ", round(acc[i], 5))
+
+
+def var_imp(importances, ind_i):
     with open('../output_files/features.p', 'rb') as fp:
         features = pickle.load(fp)
 

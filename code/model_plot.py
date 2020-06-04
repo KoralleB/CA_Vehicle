@@ -2,6 +2,7 @@ import pickle
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from IPython.display import display
 
 
@@ -46,9 +47,12 @@ def acc_print(label, acc):
         print("Accuracy of ", label[i], " is ", round(acc[i], 5))
 
 
-def var_imp(importances, ind_i):
+def var_imp(best_model_name, ind_i):
     with open('../output_files/features.p', 'rb') as fp:
         features = pickle.load(fp)
+
+    path_load = '../output_files/importances_' + best_model_name + '.npy'
+    importances = np.load(path_load)
 
     # df of importances
     d = {'features': features, 'importances': importances}

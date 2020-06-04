@@ -22,26 +22,20 @@ def read_data():
 
 
 def params():
-    # n_estimators = [int(x) for x in np.linspace(start=100, stop=1000, num=100)]  # number of trees
-    # max_depth = [int(x) for x in np.linspace(1, 50, num=10)]  # maximum number of levels in tree
-    # max_depth.append(None)
-    # min_samples_split = [2, 5, 10]  # minimum number of samples required to split a node
-    # min_samples_leaf = [1, 2, 4]  # minimum number of samples required at each leaf node
-    # max_features = ['auto', 'sqrt']  # number of features to consider at every split
-    # max_leaf_nodes = [int(x) for x in np.linspace(0, 200, num=8)]  # condition on node splitting
-
-    n_estimators = [300, 800]
-    max_depth = [5, 15]
+    n_estimators = [int(x) for x in np.linspace(start=100, stop=1000, num=100)]  # number of trees
+    max_depth = [int(x) for x in np.linspace(1, 50, num=10)]  # maximum number of levels in tree
+    max_depth.append(None)
+    min_samples_split = [2, 5, 10]  # minimum number of samples required to split a node
+    min_samples_leaf = [1, 2, 4]  # minimum number of samples required at each leaf node
+    max_features = ['auto', 'sqrt']  # number of features to consider at every split
+    max_leaf_nodes = [int(x) for x in np.linspace(0, 200, num=8)]  # condition on node splitting
 
     # create hyperparameter grid
-    # grid_params = {'n_estimators': n_estimators,
-    #          'min_samples_split': min_samples_split,
-    #          'min_samples_leaf': min_samples_leaf,
-    #          'max_leaf_nodes': max_leaf_nodes.
-    #          'max_features': max_features,
-    #          'max_depth': max_depth}
-
     grid_params = {'n_estimators': n_estimators,
+                   'min_samples_split': min_samples_split,
+                   'min_samples_leaf': min_samples_leaf,
+                   'max_leaf_nodes': max_leaf_nodes,
+                   'max_features': max_features,
                    'max_depth': max_depth}
 
     return grid_params
@@ -85,25 +79,23 @@ def modeling():
     fit(X_train, y_train, X_test, y_test, grid_params)
 
 
-def modeling_bp():
+def modeling_bp(best_model_name):
     X_train, y_train, X_test, y_test = read_data()
 
-    with open('../output_files/best_params_rf.p', 'rb') as fp:
+    path_load = '../output_files/' + 'best_params_' + best_model_name + '.p'
+    with open(path_load, 'rb') as fp:
         bp = pickle.load(fp)
-
-    # model_bp = RandomForestClassifier(class_weight='balanced',
-    #                                 n_estimators=bp['n_estimators'],
-    #                                min_samples_split=bp['min_samples_split'],
-    #                               min_samples_leaf=bp['min_samples_leaf'],
-    #                                max_leaf_nodes=bp['max_leaf_nodes'],
-    #                                max_features=bp['max_features'],
-    #                                max_depth=bp['max_depth'])
 
     model_bp = RandomForestClassifier(class_weight='balanced',
                                       n_estimators=bp['n_estimators'],
+                                      min_samples_split=bp['min_samples_split'],
+                                      min_samples_leaf=bp['min_samples_leaf'],
+                                      max_leaf_nodes=bp['max_leaf_nodes'],
+                                      max_features=bp['max_features'],
                                       max_depth=bp['max_depth'])
 
     model_bp.fit(X_train, y_train)
 
     importances = model_bp.feature_importances_
-    np.save('../output_files/importances_rf.npy', importances)
+    path_save = '../output_files/importances_' + best_model_name + '.npy'
+    np.save(path_save, importances)

@@ -71,10 +71,11 @@ def modeling():
     fit(X_train, y_train, X_test, y_test, grid_params)
 
 
-def modeling_bp():
+def modeling_bp(best_model_name):
     X_train, y_train, X_test, y_test = read_data()
 
-    with open('../output_files/best_params_log.p', 'rb') as fp:
+    path_load = '../output_files/' + 'best_params_' + best_model_name + '.p'
+    with open(path_load, 'rb') as fp:
         bp = pickle.load(fp)
 
     model_bp = LogisticRegression(max_iter=10000,
@@ -86,4 +87,5 @@ def modeling_bp():
     model_bp.fit(X_train, y_train)
 
     importances = model_bp.coef_[0]
-    np.save('../output_files/importances_log.npy', importances)
+    path_save = '../output_files/importances_' + best_model_name + '.npy'
+    np.save(path_save, importances)

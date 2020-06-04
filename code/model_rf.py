@@ -1,5 +1,4 @@
 import pickle
-
 import numpy as np
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier

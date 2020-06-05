@@ -43,7 +43,7 @@ def conf_mat(label, cm):
 
 def acc_print(label, acc):
     for i in range(len(label)):
-        print("Accuracy of ", label[i], " is ", round(acc[i], 5))
+        print("Accuracy of ", label[i], " is ", np.round(acc[i], 5))
 
 
 def var_imp(best_model_name, ind_i):

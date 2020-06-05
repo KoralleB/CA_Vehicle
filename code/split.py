@@ -8,6 +8,10 @@ from imblearn.under_sampling import RandomUnderSampler
 
 
 def read_data():
+    """
+    import preprocessed dataframe for modeling.
+    :return: preprocessed dataframe for modeling
+    """
     data = pd.read_csv('../output_files/data.csv')
 
     # change column type
@@ -23,6 +27,12 @@ def read_data():
 
 
 def const_x_y(data):
+    """
+    construct X and y.
+    Impute numerical variables with mean, convert categorical variables into dummy variables.
+    :param data:  preprocessed dataframe
+    :return: X and y
+    """
     # construct X and y
     y = data.iloc[:, data.columns == 'y']
     X = data.iloc[:, ~data.columns.isin(['sampno', 'perid', 'y', 'county'])]
@@ -43,12 +53,17 @@ def const_x_y(data):
     X_final = pd.concat([X_cat, X_num], axis=1)
     X_final = X_final.loc[:, ~X_final.columns.duplicated()]
 
+    # save X and y
     X_final.to_csv('../output_files/X_final.csv', index=False)
     y.to_csv('../output_files/y.csv', index=False)
     return X_final, y
 
 
 def split_data():
+    """
+    split X and y into train and test set.
+    apply different resampling techniques on training X and y, because they are imbalanced.
+    """
     data = read_data()
     X_final, y = const_x_y(data)
     # train test split
@@ -58,22 +73,23 @@ def split_data():
     y_train.to_csv('../output_files/y_train.csv', index=False)
     y_test.to_csv('../output_files/y_test.csv', index=False)
 
-    # features for variable importance
+    # save features (colnames) for variable importance of random forests
     features = X_train.columns
     with open('../output_files/features.p', 'wb') as fp:
         pickle.dump(features, fp, protocol=pickle.HIGHEST_PROTOCOL)
 
+    # make X and y arrays
     X_train = np.array(X_train)
     y_train = np.array(y_train).flatten()
     X_test = np.array(X_test)
     y_test = np.array(y_test).flatten()
 
-    np.save('../output_files/X_train_over.npy', X_train)
-    np.save('../output_files/y_train_over.npy', y_train)
-    np.save('../output_files/X_test_over.npy', X_test)
-    np.save('../output_files/y_test_over.npy', y_test)
+    np.save('../output_files/X_train.npy', X_train)
+    np.save('../output_files/y_train.npy', y_train)
+    np.save('../output_files/X_test.npy', X_test)
+    np.save('../output_files/y_test.npy', y_test)
 
-    # resampling methods
+    # resampling techniques
     over = RandomOverSampler(random_state=10)
     X_train_over, y_train_over = over.fit_resample(X_train, y_train)
 

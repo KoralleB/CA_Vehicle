@@ -3,6 +3,10 @@ import pandas as pd
 
 
 def read_data():
+    """
+    read three datasets
+    :return: three datasets
+    """
     veh = pd.read_csv('../data/survey_res_vehicle.csv')
     main = pd.read_csv('../data/survey_res_main.csv')
     per = pd.read_csv('../data/survey_res_person.csv')
@@ -11,6 +15,11 @@ def read_data():
 
 
 def prepro_veh(veh):
+    """
+    preprocessing vehicle dataset.
+    :param veh: vehicle dataset
+    :return: preprocessed vehicle dataset
+    """
     # shorten column names
     veh = veh.rename(columns={'primary_driver_id': 'perid'})
     veh = veh.rename(columns={'annual_mileage': 'ann_mile'})
@@ -33,6 +42,11 @@ def prepro_veh(veh):
 
 
 def prepro_main(main):
+    """
+    preprocessing household dataset.
+    :param main: household dataset
+    :return: preprocessed household dataset
+    """
     # shorten column names
     main = main.rename(columns={'household_members_4': 'hh_emp'})
     main = main.rename(columns={'home_electricity_access': 'elec_acc'})
@@ -56,6 +70,11 @@ def prepro_main(main):
 
 
 def prepro_per(per):
+    """
+    preprocessing household member dataset.
+    :param per: household member dataset
+    :return: preprocessed household member dataset
+    """
     # employment
     per['employ'] = np.nan
     per['employ'] = np.where(per.employment == 1, 1, per['employ'])  # employed full-time
@@ -90,6 +109,13 @@ def prepro_per(per):
 
 
 def merge_hhveh(veh, main, per):
+    """
+    merge three datasets into one.
+    :param veh: vehicle dataset
+    :param main: household dataset
+    :param per: household member dataset
+    :return: merged dataset
+    """
     # merge
     data_temp = pd.merge(veh[['sampno', 'perid', 'y', 'ann_mile', 'tnc_veh', 'delivery']],
                          main[['sampno', 'county', 'region', 'hh_veh', 'hh_size', 'hh_emp', 'charge_work',
@@ -98,7 +124,7 @@ def merge_hhveh(veh, main, per):
     data = pd.merge(data_temp,
                     per[['perid', 'gender', 'employ', 'stu', 'hh_drv', 'drive_freq', 'race']], on='perid')
 
-    # replca blank with NaN
+    # replace blank with NaN
     data = data.replace(r'^\s*$', np.nan, regex=True)
 
     # change column type
@@ -114,6 +140,9 @@ def merge_hhveh(veh, main, per):
 
 
 def get_data():
+    """
+    call for all the functions above to create a single dataframe for modeling.
+    """
     veh, main, per = read_data()
     veh = prepro_veh(veh)
     main = prepro_main(main)

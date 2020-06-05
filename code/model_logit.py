@@ -12,7 +12,7 @@ def read_data(resample=None):
     :param resample: resampling technique. input: 'over', 'under', 'hyb', 'smote' or None
     :return: X and y train and test sets
     """
-    X_test = np.load('../output_files/X_test.npy')
+    X_test = np.load('..\output_files\X_test.npy')
     y_test = np.load('../output_files/y_test.npy')
 
     if resample is None:

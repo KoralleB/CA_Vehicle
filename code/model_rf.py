@@ -6,17 +6,21 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import RandomizedSearchCV
 
 
-def read_data(resample):
+def read_data(resample=None):
+    """
+    import X and y train and test set based on chosen resampling technique.
+    :param resample: resampling technique. input: 'over', 'under', 'hyb', 'smote' or None
+    :return: X and y train and test sets
+    """
     X_test = np.load('../output_files/X_test.npy')
     y_test = np.load('../output_files/y_test.npy')
 
     if resample is None:
         X_train = np.load('../output_files/X_train.npy')
         y_train = np.load('../output_files/y_train.npy')
-
-    if resample is not None:
+    else:
         path_load_X = '../output_files/X_train_' + resample + '.npy'
-        path_load_y = '../output_files/X_train_' + resample + '.npy'
+        path_load_y = '../output_files/y_train_' + resample + '.npy'
         X_train = np.load(path_load_X)
         y_train = np.load(path_load_y)
 
@@ -24,6 +28,10 @@ def read_data(resample):
 
 
 def params():
+    """
+    construct  hyperparameter grid forrandom forest.
+    :return: dictionary of random forest  hyperparameter grid
+    """
     n_estimators = [int(x) for x in np.linspace(start=100, stop=1000, num=100)]  # number of trees
     max_depth = [int(x) for x in np.linspace(1, 50, num=10)]  # maximum number of levels in tree
     max_depth.append(None)
@@ -44,6 +52,14 @@ def params():
 
 
 def fit(X_train, y_train, X_test, y_test, grid_params):
+    """
+    cross validate hyperparameters, fit model, predict, and output accuracy, confusion matrix, roc, and pr.
+    :param X_train: X train set array from the function above
+    :param y_train: y train set array from the function above
+    :param X_test: X test set array from the function above
+    :param y_test: y test set array from the function above
+    :param grid_params: grid dictionary from the function above
+    """
     rf = RandomForestClassifier(class_weight='balanced')
     model = RandomizedSearchCV(rf, grid_params, n_iter=100, cv=5, verbose=2, random_state=50, n_jobs=-1)
     model.fit(X_train, y_train)
@@ -75,19 +91,34 @@ def fit(X_train, y_train, X_test, y_test, grid_params):
     np.save('../output_files/recall_rf.npy', recall)
 
 
-def modeling(resample):
+def modeling(resample=None):
+    """
+    call for all the functions above to create random forest model
+    :param resample: resampling technique. input: 'over', 'under', 'hyb', 'smote' or None
+    """
     X_train, y_train, X_test, y_test = read_data(resample)
     grid_params = params()
     fit(X_train, y_train, X_test, y_test, grid_params)
 
 
-def modeling_bp(resample, best_model_name):
+def modeling_bp(resample=None):
+    """
+    create a model with the best parameters of the chosen resampling technique
+    :param resample: resampling technique. input: 'over', 'under', 'hyb', 'smote' or None
+    """
+    # load data
     X_train, y_train, X_test, y_test = read_data(resample)
 
-    path_load = '../output_files/' + 'best_params_' + best_model_name + '.p'
-    with open(path_load, 'rb') as fp:
-        bp = pickle.load(fp)
+    # read best params dictionary
+    if resample is None:
+        with open('../output_files/best_params_log.p', 'rb') as fp:
+            bp = pickle.load(fp)
+    else:
+        path_load = '../output_files/' + 'best_params_log_' + resample + '.p'
+        with open(path_load, 'rb') as fp:
+            bp = pickle.load(fp)
 
+    # create model with best parameters
     model_bp = RandomForestClassifier(class_weight='balanced',
                                       n_estimators=bp['n_estimators'],
                                       min_samples_split=bp['min_samples_split'],
@@ -96,8 +127,13 @@ def modeling_bp(resample, best_model_name):
                                       max_features=bp['max_features'],
                                       max_depth=bp['max_depth'])
 
+    # fit model
     model_bp.fit(X_train, y_train)
 
+    # save variables coefficients
     importances = model_bp.feature_importances_
-    path_save = '../output_files/importances_' + best_model_name + '.npy'
-    np.save(path_save, importances)
+    if resample is None:
+        np.save('../output_files/importances_log.npy', importances)
+    else:
+        path_save = '../output_files/importances_log_' + resample + '.npy'
+        np.save(path_save, importances)

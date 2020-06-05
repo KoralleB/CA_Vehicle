@@ -101,7 +101,7 @@ def modeling_bp(resample=None):
     # load data
     X_train, y_train, X_test, y_test = read_data(resample)
 
-    # read beset params dictionary
+    # read best params dictionary
     if resample is None:
         with open('../output_files/best_params_log.p', 'rb') as fp:
             bp = pickle.load(fp)

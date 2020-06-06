@@ -26,10 +26,12 @@ def read_data(resample=None):
 
 def tf_data(X_train, y_train, X_test, y_test):
     """
+    create tensorflow train and test sets.
     :param X_train: X test set array from the function above
     :param y_train: y test set array from the function above
     :param X_test: X train set array from the function above
     :param y_test: y train set array from the function above
+    :return: train and test sets
     """
     tf.keras.backend.set_floatx('float64')
     batch_size = 32
@@ -79,7 +81,7 @@ def fit(train_dataset, X_test_tf, y_test_tf, resample=None, func_act='relu', num
             tf.keras.layers.Dense(64, activation=func_act),  # 2nd hidden layer
             tf.keras.layers.Dense(2),  # output
         ])
-    
+
     # train model
     train_loss_results = []
     train_accuracy_results = []

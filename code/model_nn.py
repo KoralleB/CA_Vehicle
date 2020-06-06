@@ -25,6 +25,12 @@ def read_data(resample=None):
 
 
 def tf_data(X_train, y_train, X_test, y_test):
+    """
+    :param X_train: X test set array from the function above
+    :param y_train: y test set array from the function above
+    :param X_test: X train set array from the function above
+    :param y_test: y train set array from the function above
+    """
     tf.keras.backend.set_floatx('float64')
     batch_size = 32
 

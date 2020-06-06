@@ -16,18 +16,17 @@ Since less than 10% of the vehicles in California are alternative fuel vehicles,
 
 ### Notebooks
 1. DataExplore - data exploration.
-2. Resample - performance evaluation of different resampling techniques for each model. Similar evaluation for different NeuralNet architectures.
-3. Performance - performance evaluation of the different models with a chosen resampling technique.
-4. Maps - true and prediction results visualized with CA maps, discussion about results and policy implementations.
+2. Performance - performance evaluation of different resampling techniques for each model. Similar evaluation for different Neural Net architectures.
+3. Maps - true and prediction results visualized with CA maps, discussion about results and policy implementations.
 
 ### Code files
-1. prepro.py - preprocessing and cleaning the three datasets, and merging into one.
+1. data_prepro.py - preprocessing and cleaning the three datasets, and merging into one.
 2. data_plot.py - plotting functions for data exploration.
-3. split.py - split dataset into train and test X and y, and resample.
+3. data_split.py - split dataset into train and test X and y, and resample.
 4. model_logit.py - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for Logistic Regression.
 5. model_rf.py - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for Random Forests.
 6. model_knn.py - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for K Nearest Neighbors.
-7. model_rf.py - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for Neural Nets.
+7. model_nn.py - define and train model, predict, output accuracy, confusion matrix, roc, pr, and training arrays Neural Nets.
 8. model_plot.py - plotting functions for model performance.
 9. map_plot.py - plotting functions for mapping true and predicted results.
 

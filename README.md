@@ -8,6 +8,12 @@ Since less than 10% of the vehicles in California are alternative fuel vehicles,
 ### Data Source
 [California Vehicle Survey](https://www.energy.ca.gov/data-reports/surveys/california-vehicle-survey)
 
+### Objectives
+blabla
+
+### Conclusions
+blabla
+
 ### Models to be considered
 * Logistic Regression (log)
 * Random Forests (rf)

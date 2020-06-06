@@ -1,24 +1,24 @@
 # Vehicle Ownership - Powertrain Prediction
 
 ### Abstract
-In this project, our objective is to identify the demographic and socioeconomic attributes of alternative fuel vehicle owners California. For this, we use the National Household Travel Survey (NHTS) 2017 dataset. We investigate several different machine learning methods that can handle unbalanced data, such as logistic regression, support vector machine, random forest, neural nets, and others. The prediction performance will be assessed with the most important variables for each model. Conclusions about the affecting attributes will be made on a county resolution.
-
-Since less than 10% of the vehicles in California are alternative fuel vehicles, we will treat the unbalanced dataset accordingly, but it might impose difficulties on the analysis. The dataset includes about 25,000 households and we hope that is big enough to achieve good prediction performance.
+In this project, our objective is to classify vehicles by powertrain type using personal and household level data from
+the 2019 California Vehicle Survey. In particular, we wish to compare the performance of standard Logistic Regression
+models to other classification models typically seen in Machine learning to evaluate the potential use of these models 
+in future research. In addition to logistic regression (log) models, Random Forests (rf), Nearest Neighbor (knn) algorithm, 
+and Neural Network (nn) are considered. Class imbalance present in the data poses a potential problem for predictive 
+performance. Consequently, adjustments are made and the model performances are investigated both with and without 
+adjustments (oversampling) to see how models handle the class imbalance, and which benefit the most from attempts to 
+correct for the imbalance.
+Highly performed classification methods can benefit policy makers and planners to anticipate the energy demand and
+infrastructure in California.
 
 ### Data Source
 [California Vehicle Survey](https://www.energy.ca.gov/data-reports/surveys/california-vehicle-survey)
 
-### Objectives
-blabla
-
 ### Conclusions
-blabla
-
-### Models to be considered
-* Logistic Regression (log)
-* Random Forests (rf)
-* K Nearest Neighbors (knn)
-* Neural Nets (nn)
+No model appears to significantly outperform all others by all standards of model evaluation. However the diversity
+of strengths and weaknesses across models suggests the potential for future application of machine learning methods
+for vehicle ownership prediction.
 
 ### Notebooks
 1. DataExplore - data exploration.
@@ -39,3 +39,9 @@ blabla
 ### Collaborators
 * Koral Buch kbuch@ucdavis.edu
 * Kenneth Broadhead kcbroadhead@ucdavis.edu
+
+### References
+*
+*
+*
+*

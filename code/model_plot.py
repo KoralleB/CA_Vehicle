@@ -83,10 +83,10 @@ def roc_print(label, y_true, y_pred):
         TN = np.logical_and(y_true == y_pred[i], y_true == 0).sum()
         FPR = 1. * FP / (FP + TN)
         TPR = 1. * TP / (TP + FN)
-        #  PPV = 1. * TP / (TP + FP)
+        PPV = 1. * TP / (TP + FP)
         print("FPR of ", label[i], " is ", np.round(FPR, 5))
         print("TPR of ", label[i], " is ", np.round(TPR, 5))
-
+        print("PPV of ", label[i], " is ", np.round(PPV, 5))
 
 def var_imp(modelname, ind_i):
     """

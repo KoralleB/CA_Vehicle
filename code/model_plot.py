@@ -113,7 +113,7 @@ def var_imp(modelname, ind_i):
     plt.show()
 
 
-def plot_nn(train_nn_results, label, title):
+def train_nn(train_nn_results, label, title):
     """
     plot loss or accuracy vs epoch of nn models.
     :param train_nn_results: epoch training output. input: list of np.load('../output_files/train_loss_results_nn_smote_x.npy') or train_accuracy_results_nn_smote_x.npy

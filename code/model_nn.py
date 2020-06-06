@@ -44,13 +44,15 @@ def tf_data(X_train, y_train, X_test, y_test):
     return train_dataset, X_test_tf, y_test_tf
 
 
-def fit(train_dataset, X_test_tf, y_test_tf, resample=None):
+def fit(train_dataset, X_test_tf, y_test_tf, resample=None, func_act='relu', num_layer=1):
     """
     define and train nn model, predict, output accuracy, confusion matrix, roc, pr, and training arrays.
     :param X_test_tf: X tensorflow test set array from the function above
     :param y_test_tf: y tensorflow test set array from the function above
     :param train_dataset: tensorflow dataset
     :param resample: resampling technique. input: 'over', 'under', 'hyb', 'smote' or None
+    :param func_act: activation function for hidden layer. input: 'relu', 'sigmoid' or other functions.
+    :param num_layer: number of hidden layers. input: 1 or 2.
     """
     # define loss and optimizer
     logistic_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
@@ -66,11 +68,18 @@ def fit(train_dataset, X_test_tf, y_test_tf, resample=None):
         return loss_val, tape.gradient(loss_value, model.trainable_variables)
 
     # define model
-    model = tf.keras.Sequential([
-        tf.keras.layers.Dense(64, activation='relu'),  # 1st hidden layer
-        tf.keras.layers.Dense(2),  # output
-    ])
-
+    if num_layer is 1:
+        model = tf.keras.Sequential([
+            tf.keras.layers.Dense(64, activation=func_act),  # 1st hidden layer
+            tf.keras.layers.Dense(2),  # output
+        ])
+    else:
+        model = tf.keras.Sequential([
+            tf.keras.layers.Dense(64, activation=func_act),  # 1st hidden layer
+            tf.keras.layers.Dense(64, activation=func_act),  # 2nd hidden layer
+            tf.keras.layers.Dense(2),  # output
+        ])
+    
     # train model
     train_loss_results = []
     train_accuracy_results = []

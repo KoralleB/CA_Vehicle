@@ -87,6 +87,7 @@ def roc_print(label, y_true, y_pred):
         print("FPR of ", label[i], " is ", np.round(FPR, 5))
         print("TPR of ", label[i], " is ", np.round(TPR, 5))
         print("PPV of ", label[i], " is ", np.round(PPV, 5))
+        print('')
 
 def var_imp(modelname, ind_i):
     """
@@ -113,19 +114,21 @@ def var_imp(modelname, ind_i):
     plt.show()
 
 
-def train_nn(train_nn_results, label, title):
+def train_nn(train_nn_results, label, title, yaxis):
     """
     plot loss or accuracy vs epoch of nn models.
     :param train_nn_results: epoch training output. input: list of
     np.load('../output_files/train_loss_results_nn_smote_x.npy') or train_accuracy_results_nn_smote_x.npy
-    :param label: legend label. input: ['model1', 'model2',...] :param title: plot title. input: 'title
+    :param label: legend label. input: ['model1', 'model2',...]
+    :param title: plot title. input: 'title'
+    :param yaxis: y axis label. input: 'yaxis'
     """
     plt.figure(figsize=(12,5))
     for i in range(len(label)):
         plt.plot(train_nn_results[i], label=label[i], alpha=0.75)
     plt.title(title)
-    plt.xlabel("epoch")
-    plt.ylabel("loss")
+    plt.xlabel('epoch')
+    plt.ylabel(yaxis)
     plt.legend(bbox_to_anchor=(1.05, 1.0), loc='upper left')
     plt.tight_layout()
     plt.show()

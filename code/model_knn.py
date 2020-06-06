@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 from sklearn import metrics
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import RandomizedSearchCV
 
@@ -29,24 +29,18 @@ def read_data(resample=None):
 
 def params():
     """
-    construct  hyperparameter grid for random forest.
+    construct  hyperparameter grid for KNN.
     :return: dictionary of random forest  hyperparameter grid
     """
-    n_estimators = [int(x) for x in np.linspace(start=100, stop=1000, num=100)]  # number of trees
-    max_depth = [int(x) for x in np.linspace(1, 50, num=10)]  # maximum number of levels in tree
-    max_depth.append(None)
-    min_samples_split = [2, 5, 10]  # minimum number of samples required to split a node
-    min_samples_leaf = [1, 2, 4]  # minimum number of samples required at each leaf node
-    max_features = ['auto', 'sqrt']  # number of features to consider at every split
-    max_leaf_nodes = [int(x) for x in np.linspace(0, 200, num=8)]  # condition on node splitting
+
+    n_neighbors = np.arange(1, 30, 1)
+    weights = ['uniform', 'distance']
+    metric = ['euclidean', 'manhattan', 'mahalanobis']
 
     # create hyperparameter grid
-    grid_params = {'n_estimators': n_estimators,
-                   'min_samples_split': min_samples_split,
-                   'min_samples_leaf': min_samples_leaf,
-                   'max_leaf_nodes': max_leaf_nodes,
-                   'max_features': max_features,
-                   'max_depth': max_depth}
+    grid_params = {'n_neighbors': n_neighbors,
+              'weights': weights,
+              'metric': metric}
 
     return grid_params
 

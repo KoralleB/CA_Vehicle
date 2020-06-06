@@ -63,16 +63,36 @@ def acc_print(label, acc):
     """
     accuracy value for selected models
     :param label: model accuracy. input: ['model1', 'model2',...]
-    :param cm: accuracy of model. input: list of p.load('../output_files/acc_modelname.npy')
+    :param acc: accuracy of model. input: list of p.load('../output_files/acc_modelname.npy')
     """
     for i in range(len(label)):
         print("Accuracy of ", label[i], " is ", np.round(acc[i], 5))
+
+
+def roc_print(label, y_true, y_pred):
+    """
+    fpr and tpr (ROC) values for selected models
+    :param label: model accuracy. input: ['model1', 'model2',...]
+    :param y_true: prediction of model. input: p.load('../output_files/y_true.npy')
+    :param y_pred: prediction of model. input: list of p.load('../output_files/y_pred_modelname.npy')
+    """
+    for i in range(len(label)):
+        FP = np.logical_and(y_true != y_pred[i], y_pred[i] != 1).sum()
+        FN = np.logical_and(y_true != y_pred[i], y_pred[i] == 1).sum()
+        TP = np.logical_and(y_true == y_pred[i], y_true != 1).sum()
+        TN = np.logical_and(y_true == y_pred[i], y_true == 1).sum()
+        FPR = 1. * FP / (FP + TN)
+        TPR = 1. * TP / (TP + FN)
+        #  PPV = 1. * TP / (TP + FP)
+        print("FPR of ", label[i], " is ", np.round(FPR, 5))
+        print("TPR of ", label[i], " is ", np.round(TPR, 5))
 
 
 def var_imp(modelname, ind_i):
     """
     variable importance plot for a selected random forest model
     :param modelname: model name. input: 'log', 'log_over', "rf_smote', 'svm_under', etc
+    :param ind_i: number of top important variables
     """
     with open('../output_files/features.p', 'rb') as fp:
         features = pickle.load(fp)

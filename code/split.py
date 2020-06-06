@@ -45,9 +45,9 @@ def const_x_y(data):
     # impute with mean numerical columns, and standardize
     X_num = X.loc[:, X.columns.isin(['ann_mile', 'hh_veh', 'hh_size', 'hh_emp', 'hh_drv'])]
     num_col = X_num.columns
-    imp = SimpleImputer(missing_values=np.nan, strategy='mean') # impute
+    imp = SimpleImputer(missing_values=np.nan, strategy='mean')  # impute
     X_num = imp.fit_transform(X_num)
-    scale = preprocessing.StandardScaler() # standardize
+    scale = preprocessing.StandardScaler()  # standardize
     X_num = scale.fit_transform(X_num)
     X_num = pd.DataFrame(X_num)
     X_num.columns = num_col

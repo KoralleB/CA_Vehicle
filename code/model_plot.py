@@ -15,7 +15,7 @@ def roc_plot(label, fpr, tpr, roc_auc):
     """
     plt.figure()
     for i in range(len(label)):
-        plt.plot(fpr[i], tpr[i], label=label[i] + ' AUC = %0.2f' % roc_auc[i])
+        plt.plot(fpr[i], tpr[i], label=label[i] + ' AUC = %0.2f' % roc_auc[i], alpha=0.75)
     plt.plot([0, 1], [0, 1], 'r--')
     plt.xlim([-0.01, 1.01])
     plt.ylim([-0.01, 1.01])
@@ -35,7 +35,7 @@ def pr_plot(label, recall, precision):
     """
     plt.figure()
     for i in range(len(label)):
-        plt.plot(recall[i], precision[i], label=label[i])
+        plt.plot(recall[i], precision[i], label=label[i], alpha=0.75)
     plt.xlim([-0.01, 1.01])
     plt.ylim([-0.01, 1.01])
     plt.xlabel('Recall')
@@ -116,13 +116,13 @@ def var_imp(modelname, ind_i):
 def train_nn(train_nn_results, label, title):
     """
     plot loss or accuracy vs epoch of nn models.
-    :param train_nn_results: epoch training output. input: list of np.load('../output_files/train_loss_results_nn_smote_x.npy') or train_accuracy_results_nn_smote_x.npy
-    :param label: legend label. input: ['model1', 'model2',...]
-    :param title: plot title. input: 'title
+    :param train_nn_results: epoch training output. input: list of
+    np.load('../output_files/train_loss_results_nn_smote_x.npy') or train_accuracy_results_nn_smote_x.npy
+    :param label: legend label. input: ['model1', 'model2',...] :param title: plot title. input: 'title
     """
     plt.figure(figsize=(12,5))
     for i in range(len(label)):
-        plt.plot(train_nn_results[i], label=label[i], alpha=0.5)
+        plt.plot(train_nn_results[i], label=label[i], alpha=0.75)
     plt.title(title)
     plt.xlabel("epoch")
     plt.ylabel("loss")

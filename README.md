@@ -17,7 +17,7 @@ Since less than 10% of the vehicles in California are alternative fuel vehicles,
 ### Notebooks
 1. DataExplore - data exploration.
 2. Resample - performance evaluation of different resampling techniques for each model. Similar evaluation for different NeuralNet architectures.
-3. Performance - performance evaluation of the different models with the best resampling technique.
+3. Performance - performance evaluation of the different models with a chosen resampling technique.
 4. Maps - true and prediction results visualized with CA maps, discussion about results and policy implementations.
 
 ### Code files

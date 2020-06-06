@@ -60,6 +60,57 @@ def something:
         tf.keras.layers.Dense(2),  # output
     ])
 
+    # Train NN_base
+    train_loss_results = []
+    train_accuracy_results = []
+
+    num_epochs = 201  # Small number of epochs: early stopping times to avoid overfitting
+
+    for epoch in range(num_epochs):
+        epoch_loss_avg = tf.keras.metrics.Mean()
+        epoch_accuracy = tf.keras.metrics.SparseCategoricalAccuracy()
+        # Training loop - using batches of 32
+        for x, y in train_dataset:
+            loss_value, grads = grad(NN_base, x, y)
+            optimizer.apply_gradients(zip(grads, NN_base.trainable_variables))
+            epoch_loss_avg.update_state(loss_value)
+            epoch_accuracy.update_state(y, NN_base(x, training=True))
+
+        # End epoch
+        train_loss_results.append(epoch_loss_avg.result())
+        train_accuracy_results.append(epoch_accuracy.result())
+
+        if epoch % 50 == 0:
+            print("Epoch {:03d}: Loss: {:.3f}, Accuracy: {:.3%}".format(epoch, epoch_loss_avg.result(),
+                                                                        epoch_accuracy.result()))
+
+    # Model Evaluation
+    y_pred_NN_base = tf.argmax(tf.nn.softmax(NN_base(X_tf_testing)).numpy(), axis=1, output_type=tf.int32)
+
+    acc_NN_base = metrics.accuracy_score(y_true=y_test, y_pred=y_pred_NN_base)
+    cm_NN_base = metrics.confusion_matrix(y_test, y_pred_NN_base)
+
+    # ROC Curve
+    probs_NN_base = tf.nn.softmax(NN_base(X_tf_testing)).numpy()[:, 1]
+    fpr_NN_base, tpr_NN_base, threshold_NN_base = metrics.roc_curve(y_test, probs_NN_base)
+    roc_auc_NN_base = metrics.auc(fpr_NN_base, tpr_NN_base)
+
+    # PR Curve
+    precision_NN_base, recall_NN_base, _ = metrics.precision_recall_curve(y_test, probs_NN_base)
+
+    # save
+    np.save('output_files/y_pred_NN_base.npy', y_pred_NN_base)
+    np.save('output_files/acc_NN_base.npy', acc_NN_base)
+    np.save('output_files/cm_NN_base.npy', cm_NN_base)
+    np.save('output_files/fpr_NN_base.npy', fpr_NN_base)
+    np.save('output_files/tpr_NN_base.npy', tpr_NN_base)
+    np.save('output_files/roc_auc_NN_base.npy', roc_auc_NN_base)
+    np.save('output_files/precision_NN_base.npy', precision_NN_base)
+    np.save('output_files/recall_NN_base.npy', recall_NN_base)
+
+    np.save('output_files/train_loss_results_NN_over.npy', train_loss_results)
+    np.save('output_files/train_accuracy_results_NN_over.npy', train_accuracy_results)
+
 
 
 

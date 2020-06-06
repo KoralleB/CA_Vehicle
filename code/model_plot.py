@@ -77,10 +77,10 @@ def roc_print(label, y_true, y_pred):
     :param y_pred: prediction of model. input: list of p.load('../output_files/y_pred_modelname.npy')
     """
     for i in range(len(label)):
-        FP = np.logical_and(y_true != y_pred[i], y_pred[i] != 1).sum()
-        FN = np.logical_and(y_true != y_pred[i], y_pred[i] == 1).sum()
-        TP = np.logical_and(y_true == y_pred[i], y_true != 1).sum()
-        TN = np.logical_and(y_true == y_pred[i], y_true == 1).sum()
+        FP = np.logical_and(y_true != y_pred[i], y_pred[i] == 1).sum()
+        FN = np.logical_and(y_true != y_pred[i], y_pred[i] == 0).sum()
+        TP = np.logical_and(y_true == y_pred[i], y_true == 1).sum()
+        TN = np.logical_and(y_true == y_pred[i], y_true == 0).sum()
         FPR = 1. * FP / (FP + TN)
         TPR = 1. * TP / (TP + FN)
         #  PPV = 1. * TP / (TP + FP)

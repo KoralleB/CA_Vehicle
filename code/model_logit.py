@@ -43,7 +43,7 @@ def params():
     return grid_params
 
 
-def fit(X_train, y_train, X_test, y_test, grid_params):
+def fit(X_train, y_train, X_test, y_test, grid_params, resample):
     """
     cross validate hyperparameters, fit model, predict, and output accuracy, confusion matrix, roc, and pr.
     :param X_train: X train set array from the function above
@@ -51,36 +51,48 @@ def fit(X_train, y_train, X_test, y_test, grid_params):
     :param X_test: X test set array from the function above
     :param y_test: y test set array from the function above
     :param grid_params: grid dictionary from the function above
+    :param resample: resampling technique. input: 'over', 'under', 'hyb', 'smote' or None
     """
     log = LogisticRegression(max_iter=10000, class_weight='balanced')  # Higher num of iterations for convergence
     model = GridSearchCV(log, grid_params, cv=5, verbose=2, n_jobs=-1)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
 
-    # save best_params
-    with open('../output_files/best_params_log.p', 'wb') as fp:
-        pickle.dump(model.best_params_, fp, protocol=pickle.HIGHEST_PROTOCOL)
-    # save prediction
-    np.save('../output_files/y_pred_log.npy', y_pred)
-
     # confusion matrix
     acc = metrics.accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
-    np.save('../output_files/acc_log.npy', acc)
-    np.save('../output_files/cm_log.npy', cm)
 
     # ROC
     probs = model.predict_proba(X_test)[:, 1]
     fpr, tpr, threshold = metrics.roc_curve(y_test, probs)
     roc_auc = metrics.auc(fpr, tpr)
-    np.save('../output_files/fpr_log.npy', fpr)
-    np.save('../output_files/tpr_log.npy', tpr)
-    np.save('../output_files/roc_auc_log.npy', roc_auc)
 
     # PR
     precision, recall, _ = metrics.precision_recall_curve(y_test, probs)
-    np.save('../output_files/precision_log.npy', precision)
-    np.save('../output_files/recall_log.npy', recall)
+
+    # save output files
+    if resample is None:
+        with open('../output_files/best_params_log.p', 'wb') as fp:  # save best_params
+            pickle.dump(model.best_params_, fp, protocol=pickle.HIGHEST_PROTOCOL)
+        np.save('../output_files/y_pred_log.npy', y_pred)  # save prediction
+        np.save('../output_files/acc_log.npy', acc)  # save accuracy
+        np.save('../output_files/cm_log.npy', cm)  # save confusion matrix
+        np.save('../output_files/fpr_log.npy', fpr)  # save fpr
+        np.save('../output_files/tpr_log.npy', tpr)  # save tpr
+        np.save('../output_files/roc_auc_log.npy', roc_auc)  # save roc_auc
+        np.save('../output_files/precision_log.npy', precision)  # save precision
+        np.save('../output_files/recall_log.npy', recall)  # save recall
+    else:
+        with open('../output_files/best_params_log_' + resample + '.p', 'wb') as fp:
+            pickle.dump(model.best_params_, fp, protocol=pickle.HIGHEST_PROTOCOL)
+        np.save('../output_files/y_pred_log_' + resample + '.npy', y_pred)
+        np.save('../output_files/acc_log_' + resample + '.npy', acc)
+        np.save('../output_files/cm_log_' + resample + '.npy', cm)
+        np.save('../output_files/fpr_log_' + resample + '.npy', fpr)
+        np.save('../output_files/tpr_log_' + resample + '.npy', tpr)
+        np.save('../output_files/roc_auc_log_' + resample + '.npy', roc_auc)
+        np.save('../output_files/precision_log_' + resample + '.npy', precision)
+        np.save('../output_files/recall_log_' + resample + '.npy', recall)
 
 
 def modeling(resample=None):
@@ -90,7 +102,7 @@ def modeling(resample=None):
     """
     X_train, y_train, X_test, y_test = read_data(resample)
     grid_params = params()
-    fit(X_train, y_train, X_test, y_test, grid_params)
+    fit(X_train, y_train, X_test, y_test, grid_params, resample)
 
 
 def modeling_bp(resample=None):

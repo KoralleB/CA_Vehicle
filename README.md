@@ -55,7 +55,9 @@ learning modeling in this area, and the investment in such tools can be benefici
 * Kenneth Broadhead kcbroadhead@ucdavis.edu
 
 ### References
-*
-*
-*
-*
+* J. Jia, “Analysis of Alternative Fuel Vehicle (AFV) Adoption Utilizing Different Machine Learning Methods: 
+A Case Study of 2017 NHTS,” IEEE Access, vol. 7, pp. 112726–112735, 2019, doi: 10.1109/access.2019.2934780.
+* B. Bae and H.-L. Hwang, “Predicting Daily Trip Frequencies of Vulnerable Households in New York State Using 
+Emerging Machine-Learning Approaches,” 2018.
+* W. Li and K. M. Kockelman, “How does machine learning compare to conventional econometrics for transport data sets? 
+A test of ML vs MLE,” Transp. Res. Rec., 2020, doi: 10.1017/CBO9781107415324.004.

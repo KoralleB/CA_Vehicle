@@ -14,8 +14,8 @@ performance. Consequently, adjustments are made and the model performances are i
 adjustments (oversampling) to see how models handle the class imbalance, and which benefit the most from attempts to 
 correct for the imbalance.
 
-Highly performed classification methods can benefit policy makers and planners to anticipate the energy demand and
-infrastructure in California raised by electric vehicle users.
+Highly performed classification methods can benefit policy makers and planners to anticipate the energy demand and 
+required infrastructure in California raised by electric vehicle users.
 
 ### Data Source
 [California Vehicle Survey](https://www.energy.ca.gov/data-reports/surveys/california-vehicle-survey)

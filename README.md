@@ -1,7 +1,7 @@
 # Powertrain Prediction Using Machine Learning Models
 
 ## Background
-This is a machine learning project prepared for the graduate-level course Statistical Methods in Machine Learning STA208 at UC Davis.
+This is a machine learning project prepared for the graduate-level course Statistical Methods in Machine Learning (STA208) at UC Davis.
 
 The dataset used for the project  is the [California Vehicle Survey](https://www.energy.ca.gov/data-reports/surveys/california-vehicle-survey).
 

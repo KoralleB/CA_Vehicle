@@ -33,15 +33,15 @@ Highly performed classification methods can benefit policy makers and planners t
 required infrastructure in California raised by electric vehicle users.
 
 ## Scripts
-1. [data_prepro.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/data_prepro.py') - preprocessing and cleaning the three datasets, and merging into one.
-2. [data_plot.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/data_plot.py') - plotting functions for data exploration.
-3. [data_split.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/data_split.py') - split dataset into train and test X and y, and resample.
-4. [model_logit.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_logit.py') - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for Logistic Regression.
-5. [model_rf.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_rf.py') - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for Random Forests.
-6. [model_knn.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_knn.py') - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for K Nearest Neighbors.
-7. [model_nn.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_nn.py') - define and train model, predict, output accuracy, confusion matrix, roc, pr, and training arrays Neural Nets.
-8. [model_plot.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_plot.py') - plotting functions for model performance.
-9. [map_plot.py]('https://github.com/KoralleB/CA_Vehicle/blob/master/code/map_plot.py') - plotting functions for mapping true and predicted results.
+1. [data_prepro.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/data_prepro.py) - preprocessing and cleaning the three datasets, and merging into one.
+2. [data_plot.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/data_plot.py) - plotting functions for data exploration.
+3. [data_split.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/data_split.py) - split dataset into train and test X and y, and resample.
+4. [model_logit.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_logit.py) - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for Logistic Regression.
+5. [model_rf.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_rf.py) - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for Random Forests.
+6. [model_knn.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_knn.py) - cross-validate hyperparameter, fit, predict, output performance variables, and model with best hyperparameters for K Nearest Neighbors.
+7. [model_nn.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_nn.py) - define and train model, predict, output accuracy, confusion matrix, roc, pr, and training arrays Neural Nets.
+8. [model_plot.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/model_plot.py) - plotting functions for model performance.
+9. [map_plot.py](https://github.com/KoralleB/CA_Vehicle/blob/master/code/map_plot.py) - plotting functions for mapping true and predicted results.
 
 ## Data Exploratory Analysis
 Please see the [Data Exploratory Analysis notebook](https://github.com/KoralleB/CA_Vehicle/blob/master/notebook/DataExplore.ipynb).
